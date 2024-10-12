@@ -5,12 +5,16 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --scrollbar-thumb: #0e1c2a; 
+  --scrollbar-track: #011528; 
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #011528;
     --foreground: #ededed;
+    --scrollbar-thumb: #2a4053; 
+    --scrollbar-track: #011528;
   }
 }
 
@@ -24,4 +28,22 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #24394f;
 }
