@@ -1,8 +1,13 @@
 import React, { useState } from "react";
-import { Button, Space } from "antd";
+import { Button, ConfigProvider, Space } from "antd";
 
 interface FilterBarProps {
   setFilter: (filter: string) => void;
+}
+
+interface FilterButtonProps {
+  filter: string;
+  label: string;
 }
 
 const FilterBar: React.FC<FilterBarProps> = ({ setFilter }) => {
@@ -13,34 +18,42 @@ const FilterBar: React.FC<FilterBarProps> = ({ setFilter }) => {
     setFilter(filter); // Call the passed setFilter function
   };
 
+  // Array of filters
+  const filters = [
+    { filter: "all", label: "All" },
+    { filter: "favorites", label: "Favorites" },
+    { filter: "read", label: "Read" },
+    { filter: "unread", label: "Unread" },
+  ];
+
+  // Reusable button component
+  const FilterButton: React.FC<FilterButtonProps> = ({ filter, label }) => (
+    <ConfigProvider
+      theme={{
+        components: {
+          Button: {
+            defaultHoverBg: "#1e293b",
+            defaultBg: selectedFilter === filter ? "#1e293b" : undefined,
+            defaultActiveBg: "#1e293b",
+            defaultColor: "#ffffff",
+          },
+        },
+      }}
+    >
+      <Button
+        onClick={() => handleFilterChange(filter)}
+        className={selectedFilter === filter ? "bg-blue-500 text-white" : ""}
+      >
+        {label}
+      </Button>
+    </ConfigProvider>
+  );
+
   return (
     <Space className="p-4">
-      <Button
-        onClick={() => handleFilterChange("all")}
-        className={selectedFilter === "all" ? "bg-blue-500 text-white" : ""}
-      >
-        All
-      </Button>
-      <Button
-        onClick={() => handleFilterChange("favorites")}
-        className={
-          selectedFilter === "favorites" ? "bg-blue-500 text-white" : ""
-        }
-      >
-        Favorites
-      </Button>
-      <Button
-        onClick={() => handleFilterChange("read")}
-        className={selectedFilter === "read" ? "bg-blue-500 text-white" : ""}
-      >
-        Read
-      </Button>
-      <Button
-        onClick={() => handleFilterChange("unread")}
-        className={selectedFilter === "unread" ? "bg-blue-500 text-white" : ""}
-      >
-        Unread
-      </Button>
+      {filters.map(({ filter, label }) => (
+        <FilterButton key={filter} filter={filter} label={label} />
+      ))}
     </Space>
   );
 };
