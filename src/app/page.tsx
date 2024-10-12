@@ -22,29 +22,66 @@ const Home: React.FC = () => {
     return new Set();
   };
 
+  const getReadFromStorage = (): Set<string> => {
+    if (typeof window !== "undefined") {
+      const storedRead = localStorage.getItem("readEmails");
+      return new Set(storedRead ? JSON.parse(storedRead) : []);
+    }
+    return new Set();
+  };
+
   const [favorites, setFavorites] = useState<Set<string>>(
     getFavoritesFromStorage()
   );
 
+  const [readEmails, setReadEmails] = useState<Set<string>>(
+    getReadFromStorage()
+  );
+
   const [filter, setFilter] = useState<string>("all");
 
+  // useEffect(() => {
+  //   getEmails().then(setEmails);
+  // }, []);
+
   useEffect(() => {
-    getEmails().then(setEmails);
-  }, []);
+    getEmails().then((emails) => {
+      const updatedEmails = emails.map((email) => ({
+        ...email,
+        read: readEmails.has(email.id),
+      }));
+      setEmails(updatedEmails);
+    });
+  }, [readEmails]);
+
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     localStorage.setItem("favorites", JSON.stringify(Array.from(favorites)));
+  //   }
+  // }, [favorites]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       localStorage.setItem("favorites", JSON.stringify(Array.from(favorites)));
+      localStorage.setItem(
+        "readEmails",
+        JSON.stringify(Array.from(readEmails))
+      );
     }
-  }, [favorites]);
+  }, [favorites, readEmails]);
 
   const handleSelectEmail = (email: Email) => {
     // Mark email as read upon selection
     setEmails((prevEmails) =>
-      prevEmails.map((e) =>
-        e.id === email.id ? { ...e, read: true } : e
-      )
+      prevEmails.map((e) => (e.id === email.id ? { ...e, read: true } : e))
     );
+
+    setReadEmails((prev) => {
+      const updated = new Set(prev);
+      updated.add(email.id);
+      return updated;
+    });
+
     setSelectedEmail(email);
   };
 
@@ -92,6 +129,7 @@ const Home: React.FC = () => {
           <Content className="p-6 transition-all duration-300 bg-[#011528] text-gray-400">
             <EmailBody
               email={selectedEmail}
+              favorites={favorites}
               onToggleFavorite={toggleFavorite}
             />
           </Content>
