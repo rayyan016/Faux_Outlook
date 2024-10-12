@@ -11,6 +11,11 @@ export interface Email {
   favorite?: boolean;
 }
 
+export interface EmailApiResponse {
+    list: Email[];
+    total: number;
+}
+
 export interface EmailBody {
   id: string;
   body: string;

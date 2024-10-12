@@ -1,11 +1,11 @@
 import axios from "axios";
-import { Email, EmailBody } from "../types";
+import { EmailApiResponse, EmailBody } from "../types";
 
 const API_BASE = "https://flipkart-email-mock.now.sh/"; 
 
-export const getEmails = async (page = 1): Promise<Email[]> => {
+export const getEmails = async (page = 1): Promise<EmailApiResponse> => {
   const { data } = await axios.get(`${API_BASE}?page=${page}`);
-  return data.list;
+  return data;
 };
 
 export const getEmailBody = async (id: string): Promise<EmailBody> => {
