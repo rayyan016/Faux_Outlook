@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Divider, Layout } from "antd";
+import { Layout } from "antd";
 import { Email } from "../types";
 import EmailList from "../components/EmailList";
 import EmailBody from "../components/EmailBody";
@@ -38,7 +38,15 @@ const Home: React.FC = () => {
     }
   }, [favorites]);
 
-  const handleSelectEmail = (email: Email) => setSelectedEmail(email);
+  const handleSelectEmail = (email: Email) => {
+    // Mark email as read upon selection
+    setEmails((prevEmails) =>
+      prevEmails.map((e) =>
+        e.id === email.id ? { ...e, read: true } : e
+      )
+    );
+    setSelectedEmail(email);
+  };
 
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => {
@@ -56,7 +64,7 @@ const Home: React.FC = () => {
   });
 
   return (
-    <Layout>
+    <Layout className="min-h-svh">
       {!selectedEmail ? (
         /** Full-width email list when no email is selected */
         <Content className="w-full bg-[#011528]">
