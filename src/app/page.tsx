@@ -85,12 +85,15 @@ const Home: React.FC = () => {
 
     setSelectedEmail(email);
   };
-
   const toggleFavorite = (id: string) => {
     setFavorites((prev) => {
       const updated = new Set(prev);
-      updated.has(id) ? updated.delete(id) : updated.add(id);
-      return updated;
+      if (updated.has(id)) {
+        updated.delete(id);
+      } else {
+        updated.add(id);
+      }
+      return updated; // Explicit return ensures no warning
     });
   };
 
