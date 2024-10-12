@@ -19,10 +19,14 @@ const EmailList: React.FC<EmailListProps> = ({
     dataSource={emails}
     className=""
     renderItem={(email) => (
-      <List.Item onClick={() => onSelect(email)} className="cursor-pointer rounded-md mx-2 hover:bg-[#28445f]">
+      <List.Item
+        onClick={() => onSelect(email)}
+        className={`cursor-pointer rounded-md mx-2 hover:bg-[#28445f] 
+          ${email.read ? "" : "bg-gray-800"}`}
+      >
         <List.Item.Meta
           avatar={
-            <Avatar className="ml-1 bg-[#1890ff]" >
+            <Avatar className="ml-1 bg-[#1890ff]">
               {email.from.name[0].toUpperCase()}
             </Avatar>
           }
