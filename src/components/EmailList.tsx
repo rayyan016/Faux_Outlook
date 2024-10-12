@@ -17,25 +17,34 @@ const EmailList: React.FC<EmailListProps> = ({
   <List
     itemLayout="horizontal"
     dataSource={emails}
+    className=""
     renderItem={(email) => (
-      <List.Item onClick={() => onSelect(email)} className="cursor-pointer">
+      <List.Item onClick={() => onSelect(email)} className="cursor-pointer rounded-md mx-2 hover:bg-[#28445f]">
         <List.Item.Meta
           avatar={
-            <Avatar style={{ backgroundColor: "#1890ff" }}>
+            <Avatar className="ml-1 bg-[#1890ff]" >
               {email.from.name[0].toUpperCase()}
             </Avatar>
           }
           title={
-            <div className="flex justify-between">
-              <span>{email.from.name}</span>
-              <span className="text-xs text-gray-400">
-                {new Date(email.date).toLocaleString("en-GB")}
-              </span>
+            <div>
+              <div className="flex justify-between text-white">
+                <span>From: {email.from.name}</span>
+                <span className="text-xs text-gray-400">
+                  {new Date(email.date).toLocaleString("en-GB")}
+                </span>
+              </div>
+              <div></div>
+              <span className="text-white">Subject: {email.subject}</span>
             </div>
           }
-          description={email.subject}
+          description={
+            <span className="text-white">{email.short_description}</span>
+          }
         />
-        {favorites.has(email.id) ? <StarFilled /> : <StarOutlined />}
+        <span className="text-white">
+          {favorites.has(email.id) ? <StarFilled /> : <StarOutlined />}
+        </span>
       </List.Item>
     )}
   />

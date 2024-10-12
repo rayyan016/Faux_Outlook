@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Layout } from "antd";
+import { Divider, Layout } from "antd";
 import { Email } from "../types";
 import EmailList from "../components/EmailList";
 import EmailBody from "../components/EmailBody";
@@ -19,7 +19,7 @@ const Home: React.FC = () => {
       const storedFavorites = localStorage.getItem("favorites");
       return new Set(storedFavorites ? JSON.parse(storedFavorites) : []);
     }
-    return new Set(); // Return an empty set for SSR.
+    return new Set();
   };
 
   const [favorites, setFavorites] = useState<Set<string>>(
@@ -56,20 +56,39 @@ const Home: React.FC = () => {
   });
 
   return (
-    <Layout style={{ height: "100vh" }}>
-      <Sider width={300}>
-        <FilterBar setFilter={setFilter} />
-        <EmailList
-          emails={filteredEmails}
-          onSelect={handleSelectEmail}
-          favorites={favorites}
-        />
-      </Sider>
-      <Content>
-        {selectedEmail && (
-          <EmailBody email={selectedEmail} onToggleFavorite={toggleFavorite} />
-        )}
-      </Content>
+    <Layout>
+      {!selectedEmail ? (
+        /** Full-width email list when no email is selected */
+        <Content className="w-full bg-[#011528]">
+          <FilterBar setFilter={setFilter} />
+          <EmailList
+            emails={filteredEmails}
+            onSelect={handleSelectEmail}
+            favorites={favorites}
+          />
+        </Content>
+      ) : (
+        /** Master-detail layout when an email is selected */
+        <>
+          <Sider width={400} className="transition-all duration-300">
+            <FilterBar setFilter={setFilter} />
+            <EmailList
+              emails={filteredEmails}
+              onSelect={handleSelectEmail}
+              favorites={favorites}
+            />
+          </Sider>
+
+          <div className="w-[1px] bg-gray-400"></div>
+
+          <Content className="p-6 transition-all duration-300 bg-[#011528] text-gray-400">
+            <EmailBody
+              email={selectedEmail}
+              onToggleFavorite={toggleFavorite}
+            />
+          </Content>
+        </>
+      )}
     </Layout>
   );
 };
