@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ConfigProvider, Layout, Pagination } from "antd";
+import { ConfigProvider, Layout, Pagination, Spin } from "antd";
 import { Email } from "../types";
 import EmailList from "../components/EmailList";
 import EmailBody from "../components/EmailBody";
@@ -38,11 +38,17 @@ const Home: React.FC = () => {
   const [filter, setFilter] = useState<string>("all");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalEmails, setTotalEmails] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const PAGE_SIZE = 10; // Fixed page size
 
   useEffect(() => {
-    fetchEmails(currentPage);
+    setLoading(true);
+    try {
+      fetchEmails(currentPage);
+    } finally {
+      setLoading(false);
+    }
   }, [currentPage]);
 
   const fetchEmails = async (page: number) => {
@@ -101,11 +107,18 @@ const Home: React.FC = () => {
         /** Full-width email list when no email is selected */
         <Content className="w-full bg-[#011528]">
           <FilterBar setFilter={setFilter} />
-          <EmailList
-            emails={filteredEmails}
-            onSelect={handleSelectEmail}
-            favorites={favorites}
-          />
+          {loading ? (
+            <div className="flex justify-center items-center h-full">
+              <Spin size="large" />
+            </div>
+          ) : (
+            <EmailList
+              emails={filteredEmails}
+              onSelect={handleSelectEmail}
+              favorites={favorites}
+            />
+          )}
+
           {/* Pagination Component */}
           <ConfigProvider
             theme={{
@@ -135,11 +148,17 @@ const Home: React.FC = () => {
         <>
           <Sider width={400} className="transition-all duration-300">
             <FilterBar setFilter={setFilter} />
-            <EmailList
-              emails={filteredEmails}
-              onSelect={handleSelectEmail}
-              favorites={favorites}
-            />
+            {loading ? (
+              <div className="flex justify-center items-center h-full">
+                <Spin size="large" />
+              </div>
+            ) : (
+              <EmailList
+                emails={filteredEmails}
+                onSelect={handleSelectEmail}
+                favorites={favorites}
+              />
+            )}
             {/* Pagination Component */}
             <ConfigProvider
               theme={{
